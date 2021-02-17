@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'dj_rest_auth.registration',
-    'accounts'
+    'accounts',
+    'game'
 ]
 
 SITE_ID = 1

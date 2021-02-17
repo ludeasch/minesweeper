@@ -28,7 +28,7 @@ class Game(models.Model):
     player_board = models.TextField(blank=True, default='',
                                     help_text='Board as a JSON matrix. (v: visible, h: hidden, ?: question mark, !: exclamation mark.')
     state = models.IntegerField(choices=STATE_CHOICES, default=STATE_NEW)
-    user = models.ForeignKey(User, related_name='games')
+    user = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Game'
@@ -41,7 +41,7 @@ class Game(models.Model):
 
     @classmethod
     def create_game(self, rows, cols, mines, title, user):
-    	game = Game()
+        game = Game()
         game.title = title
         board, player_board = self.new_boards(rows, columns, mines)
         game.board = board
@@ -134,7 +134,7 @@ class Game(models.Model):
         self.player_board = json.dumps(board)
 
     def make_click(self, x, y):
-    	self.reveal_at(x, y)
+        self.reveal_at(x, y)
         if self.is_mine_at(x, y):
             self.state = self.STATE_LOST
         elif self.is_all_revealed():
