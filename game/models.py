@@ -28,7 +28,6 @@ class Game(models.Model):
     player_board = models.TextField(blank=True, default='',
                                     help_text='Board as a JSON matrix. (v: visible, h: hidden, ?: question mark, !: exclamation mark.')
     state = models.IntegerField(choices=STATE_CHOICES, default=STATE_NEW)
-    score = models.IntegerField(default=0)
     user = models.ForeignKey(User, related_name='games')
 
     class Meta:
@@ -39,12 +38,24 @@ class Game(models.Model):
     def __unicode__(self):
         return self.title
 
-    @staticmethod
+
+    @classmethod
+    def create_game(self, rows, cols, mines, title, user):
+    	game = Game()
+        game.title = title
+        board, player_board = self.new_boards(rows, columns, mines)
+        game.board = board
+        game.player_board = player_board
+        game.user = user
+        game.save()
+        return game
+
+    @classmethod
     def _inside_board(rows, cols, point):
         y, x = point
         return (x >= 0 and x < cols) and (y >= 0 and y < rows)
 
-    @staticmethod
+    @classmethod
     def _adjacent_points(rows, cols, x, y):
         up = (y - 1, x)
         down = (y + 1, x)
@@ -57,7 +68,7 @@ class Game(models.Model):
         points = [up, down, left, right, upper_left, upper_right, lower_left, lower_right]
         return [p for p in points if Game._inside_board(rows, cols, p)]
 
-    @staticmethod
+    @classmethod
     def _fill_adjacent(board, rows, cols, x, y):
         if board[y][x] != 'x':
             return
@@ -66,7 +77,7 @@ class Game(models.Model):
             if board[py][px] != 'x':
                 board[py][px] = str(int(board[py][px]) + 1)
 
-    @staticmethod
+    @classmethod
     def new_boards(rows, cols, mines):
         assert mines < (rows * cols)
 
@@ -121,3 +132,11 @@ class Game(models.Model):
         board = json.loads(self.player_board)
         board[y][x] = '?'
         self.player_board = json.dumps(board)
+
+    def make_click(self, x, y):
+    	self.reveal_at(x, y)
+        if self.is_mine_at(x, y):
+            self.state = self.STATE_LOST
+        elif self.is_all_revealed():
+            self.state = self.STATE_WON
+        self.save()
