@@ -86,20 +86,32 @@ class MineseeperTest(TestCase):
 
 
     def test_pull_board_ok(self):
+        """
+        Test try to pull  boards success
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + key)
         resp = self.client.get(self.url)
         self.assertEquals(resp.status_code, status.HTTP_200_OK)
+        self.assertEquals(len(resp.json()), 1)
+        self.assertEquals(resp.json()[0].get('title'), 'title')
+        
 
     def test_pull_boards_fail(self):
+        """
+        Test try to pull  boards without credencials
+        """
         response = self.client.get(self.url)
         res_text = response.json().get('detail')
         self.assertEquals(res_text, 'Authentication credentials were not provided.')
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_new_board_ok(self):
+        """
+        Test try to create a new board success
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -115,8 +127,13 @@ class MineseeperTest(TestCase):
         self.assertEquals(resp.data.get('title'), 'test board')
         self.assertEquals(resp.data.get('state'), Game.STATE_NEW)
         self.assertEquals(resp.status_code, status.HTTP_200_OK)
+        self.assertEquals(Game.objects.all().count(), 2)
+        self.assertTrue(Game.objects.filter(user__email=self.data_user['email']).exists())
 
     def test_new_boards_with_wrong_data(self):
+        """
+        Test try to create a new board with invalid data
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -135,6 +152,9 @@ class MineseeperTest(TestCase):
         self.assertEquals(content.get('mines')[0], 'Ensure this value is greater than or equal to 1.')
 
     def test_new_boards_without_data(self):
+        """
+        Test try to create a new board without data
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -148,6 +168,9 @@ class MineseeperTest(TestCase):
         self.assertEquals(content.get('title')[0], 'This field is required.')
 
     def test_get_board_ok(self):
+        """
+        Test try to get a objects game success
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -158,6 +181,9 @@ class MineseeperTest(TestCase):
         self.assertEquals(resp.data.get('title'), 'title')
 
     def test_get_board_wrong_user(self):
+        """
+        Test when try to get a objects game from another user
+        """
         data_user2 = {
             'email': 'test2@gmail.com',
             'password': 'iajd939udju39dj'
@@ -171,6 +197,9 @@ class MineseeperTest(TestCase):
         
 
     def test_click_event_fail(self):
+        """
+        Test when the action click box get wrong params
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -181,6 +210,9 @@ class MineseeperTest(TestCase):
         self.assertEquals(resp.json().get('msg'), 'invalid data click type')
 
     def test_click_event_wrong_point(self):
+        """
+        Test when you try to revel a wrong point
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -191,6 +223,9 @@ class MineseeperTest(TestCase):
         self.assertEquals(resp.json().get('msg'), 'invalid point')
 
     def test_click_event_mark_flag(self):
+        """
+        Test when you try to mark a point as a flag
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -203,6 +238,9 @@ class MineseeperTest(TestCase):
         self.assertEquals(json.loads(game.player_board)[0][1], 'h')
 
     def test_click_event_mark_question(self):
+        """
+        Test when you try to mark a point as a question
+        """
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         key = response.json().get('key')
@@ -215,6 +253,11 @@ class MineseeperTest(TestCase):
         self.assertEquals(json.loads(game.player_board)[0][1], 'h')
 
     def test_click_win_game(self):
+        """
+
+        Test when you win the game after to reveal the last point
+        """
+
         self.game.board = json.dumps(self.board_win)
         self.game.player_board = json.dumps(self.player_b_win)
         self.game.save()

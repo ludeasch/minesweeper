@@ -11,22 +11,29 @@ class UserTest(TestCase):
     """
     def setUp(self):
         self.client = APIClient()
+        self.data_new = {
+            'email': 'test@test.com',
+            'username': 'test2',
+            'password1': '1234idu32iu32',
+            'password2': '1234idu32iu32',
+        }
         user = User()
         user.email = 'test@222.com'
+        user.username = 'testcom'
         user.set_password('andjadjaskjd')
         user.save()
 
     def test_registration_ok(self):
+        # test the corect case og the registration
         url = '/api/v1/accounts/registration/'
-        data = {
-            'email': 'test@test.com',
-            'password1': '1234idu32iu32',
-            'password2': '1234idu32iu32',
-        }
-        response = self.client.post(url, data=data)
+        response = self.client.post(url, data=self.data_new)
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(User.objects.all().count(), 2)
+        self.assertTrue(User.objects.filter(email='test@test.com').exists())
+
 
     def test_registration_fail(self):
+         # test when the registration fail for a miss field
         url = '/api/v1/accounts/registration/'
         data = {
             'email': 'test@test.com',
@@ -38,6 +45,7 @@ class UserTest(TestCase):
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_login_ok(self):
+        # test the corect case of the login
         url = '/api/v1/accounts/login/'
         data = {
             'email': 'test@222.com',
@@ -45,8 +53,10 @@ class UserTest(TestCase):
         }
         response = self.client.post(url, data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.json().get('key'))
 
     def test_login_fail(self):
+         # test when the login fail for wrong credentials
         url = '/api/v1/accounts/login/'
         data = {
             'email': 'test@test.com',
