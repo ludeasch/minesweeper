@@ -40,10 +40,11 @@ class Game(models.Model):
 
 
     @classmethod
-    def create_game(self, rows, cols, mines, title, user):
+    def create_game(cls, rows, cols, mines, title, user):
+        # function to create a new game
         game = Game()
         game.title = title
-        board, player_board = self.new_boards(rows, columns, mines)
+        board, player_board = cls.new_boards(rows, cols, mines)
         game.board = board
         game.player_board = player_board
         game.user = user
@@ -51,12 +52,14 @@ class Game(models.Model):
         return game
 
     @classmethod
-    def _inside_board(rows, cols, point):
+    def _inside_board(cls, rows, cols, point):
+        # function to check if the point if inside on the board
         y, x = point
         return (x >= 0 and x < cols) and (y >= 0 and y < rows)
 
     @classmethod
-    def _adjacent_points(rows, cols, x, y):
+    def _adjacent_points(cls, rows, cols, x, y):
+        # function to get adjacent_points
         up = (y - 1, x)
         down = (y + 1, x)
         left = (y, x - 1)
@@ -69,7 +72,8 @@ class Game(models.Model):
         return [p for p in points if Game._inside_board(rows, cols, p)]
 
     @classmethod
-    def _fill_adjacent(board, rows, cols, x, y):
+    def _fill_adjacent(cls, board, rows, cols, x, y):
+        # function to fill adjacent
         if board[y][x] != 'x':
             return
         for p in Game._adjacent_points(rows, cols, x, y):
@@ -78,7 +82,8 @@ class Game(models.Model):
                 board[py][px] = str(int(board[py][px]) + 1)
 
     @classmethod
-    def new_boards(rows, cols, mines):
+    def new_boards(cls, rows, cols, mines):
+        # function to create a new board
         assert mines < (rows * cols)
 
         board = [['0' for j in range(cols)] for i in range(rows)]
@@ -97,6 +102,7 @@ class Game(models.Model):
         return json.dumps(board), json.dumps(player_board)
 
     def reveal_at(self, x, y):
+        # function to reveal the point 
         pboard = json.loads(self.player_board)
         if pboard[y][x] == 'v':
             return
@@ -110,10 +116,12 @@ class Game(models.Model):
                 self.reveal_at(px, py)
 
     def is_mine_at(self, x, y):
+        # function to check if the point is a mine
         board = json.loads(self.board)
         return (board[y][x] == 'x')
 
     def is_all_revealed(self):
+        # function to check if all the point was revealed
         board = json.loads(self.board)
         pboard = json.loads(self.player_board)
         rows, cols = len(board), len(board[0])
@@ -124,19 +132,21 @@ class Game(models.Model):
         return True
 
     def mark_flag_at(self, x, y):
+        # function to mark a flag 
         board = json.loads(self.player_board)
         board[y][x] = '!'
         self.player_board = json.dumps(board)
 
     def mark_question_at(self, x, y):
+        # function to mark a question 
         board = json.loads(self.player_board)
         board[y][x] = '?'
         self.player_board = json.dumps(board)
 
     def make_click(self, x, y):
+        # function to handler a click
         self.reveal_at(x, y)
         if self.is_mine_at(x, y):
             self.state = self.STATE_LOST
         elif self.is_all_revealed():
             self.state = self.STATE_WON
-        self.save()

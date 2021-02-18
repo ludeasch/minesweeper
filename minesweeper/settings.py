@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'dj_rest_auth.registration',
     'accounts',
-    'game'
+    'game',
+    'test_without_migrations'
 ]
 
 SITE_ID = 1
@@ -149,3 +150,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+TEST_WITHOUT_MIGRATIONS_COMMAND = 'django_nose.management.commands.test.Command'

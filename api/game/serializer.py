@@ -7,9 +7,11 @@ class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = [
-            'date_added'
+            'id',
+            'date_added',
             'title',
-            'updated'
+            'updated',
+            'state'
         ]
 
 
@@ -19,10 +21,12 @@ class GameObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = [
-            'date_added'
+            'id',
+            'date_added',
             'title',
             'updated',
-            'board_view'
+            'board_view',
+            'state'
 
         ]
 
@@ -50,9 +54,11 @@ class GameNewSerializer(serializers.Serializer):
     title = serializers.CharField()
 
 
-class GameParamSerializer(serializers.ModelSerializer):
+class GameParamSerializer(serializers.Serializer):
     x = serializers.IntegerField(min_value=0)
     y = serializers.IntegerField(min_value=0)
+    click_type = serializers.CharField()
+
 
 
 class GameStateSerializer (serializers.ModelSerializer):
