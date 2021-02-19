@@ -22,7 +22,7 @@ Name | description
 **Returns:** access token string
 
 **Example:**
-``python
+```python
 	{
 		'key': '1fh43hf83h87h43f3hfh438fh438fh8yfh438fh'
 	}
@@ -46,7 +46,7 @@ Name | description
 **Returns:** access token string
 
 **Example:**
-``python
+```python
 	{
 		'key': '1fh43hf83h87h43f3hfh438fh438fh8yfh438fh'
 	}
@@ -59,12 +59,13 @@ Endpoint to return/change the user data.
 **User token authentication required**
 
 */api/v1/accounts/user/*
+
 **Method:** GET
 
 **Returns:** json user response 
 
 **Example:**
-``python
+```python
 	{
     "pk": 1,
     "email": "test@ddd.com",
@@ -86,7 +87,7 @@ Name | description
 **Returns:** json user response 
 
 **Example:**
-``python
+```python
 	{
     "pk": 1,
     "email": "test@ddd.com",
@@ -115,7 +116,7 @@ Name | description
 **Returns:** json message
 
 **Example:**
-``python
+```python
 	{
     	"detail": "New password has been saved."
 	}
