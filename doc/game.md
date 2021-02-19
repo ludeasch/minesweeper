@@ -170,7 +170,7 @@ Name | description | min values|
 **Parameters:**
 
 name | description | min values|
------- | ------ |
+------ | ------ | ------ |
 `state` | int | 1 or 2 |
 
 **Returns:** json game object
