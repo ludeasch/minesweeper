@@ -98,7 +98,7 @@ Name | description
 
 
 ## Change password
-Endpoint to login into the application 
+Endpoint to change the password
 
 **User token authentication required**
 
@@ -112,6 +112,8 @@ Name | description
 ------ | ------ |
 `new_password1` | string  |
 `new_password2`	|string	|
+
+*Note: new_password2 is the confirmation of new_password1*
 
 **Returns:** json message
 
