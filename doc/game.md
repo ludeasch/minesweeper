@@ -119,7 +119,7 @@ Endpoint to handler the click event.
 **Parameters:**
 
 name | description | min values|
------- | ------ |
+------ | ------ | ------ |
 `click_type` | string | 'reveal', 'flag', 'question' |
 `x` | int  | 0
 `y` | int  | 0
