@@ -156,6 +156,7 @@ Endpoint to change the game state. You can just change the state between pause a
 
 Name | description | min values|
 ------ | ------ |------ |
+`new`  | int | 0 |
 `start` | int  | 1
 `paused` |int | 2
 `won`	|int	| 4
