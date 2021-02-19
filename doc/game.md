@@ -69,7 +69,7 @@ Endpoint to return a especific game.
 
 **User token authentication required**
 
-*/api/v1/mineswepper/game/<id>/*
+*/api/v1/mineswepper/game/{ID}/*
 
 **Method:** GET
 
@@ -77,7 +77,7 @@ Endpoint to return a especific game.
 
 name | description |
 ------ | ------ |
-`id` | id of the game instance  | 
+`ID` | id of the game instance  | 
 
 **Returns:** json game object
 
@@ -112,7 +112,7 @@ Endpoint to handler the click event.
 
 **User token authentication required**
 
-*/api/v1/mineswepper/game/<id>/click_box/*
+*/api/v1/mineswepper/game/{ID}/click_box/*
 
 **Method:** POST
 
@@ -163,7 +163,7 @@ Name | description | min values|
 
 **User token authentication required**
 
-*/api/v1/mineswepper/game/<id>/set_state/*
+*/api/v1/mineswepper/game/{ID}/set_state/*
 
 **Method:** POST
 
