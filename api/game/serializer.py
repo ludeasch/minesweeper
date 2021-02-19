@@ -11,7 +11,9 @@ class GameSerializer(serializers.ModelSerializer):
             'date_added',
             'title',
             'updated',
-            'state'
+            'state',
+            'duration_seconds',
+            'total_duration_seconds'
         ]
 
 
@@ -26,7 +28,9 @@ class GameObjectSerializer(serializers.ModelSerializer):
             'title',
             'updated',
             'board_view',
-            'state'
+            'state',
+            'duration_seconds',
+            'total_duration_seconds'
 
         ]
 
@@ -60,12 +64,5 @@ class GameParamSerializer(serializers.Serializer):
     click_type = serializers.CharField()
 
 
-
-class GameStateSerializer (serializers.ModelSerializer):
-
-    class Meta:
-        model = Game
-        fields = [
-            'state'
-        ]
-
+class GameStateSerializer(serializers.Serializer):
+    state = serializers.IntegerField(min_value=1, max_value=2)

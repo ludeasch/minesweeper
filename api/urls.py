@@ -5,7 +5,6 @@ from api.game import view as game_views
 router = routers.DefaultRouter()
 router.register(r"mineswepper", game_views.MineseeperViewSet)
 router.register(r"mineswepper/game", game_views.MineseeperObjectViewSet)
-router.register(r"mineswepper/state", game_views.MineseeperStateViewSet)
 
 
 urlpatterns = [

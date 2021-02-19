@@ -1,5 +1,6 @@
 import json
 import random
+from django.utils import timezone
 from django.db import models
 from accounts.models import User
 
@@ -8,27 +9,34 @@ class Game(models.Model):
     STATE_NEW = 0
     STATE_STARTED = 1
     STATE_PAUSED = 2
-    STATE_TIMEOUT = 3
     STATE_WON = 4
     STATE_LOST = 5
     STATE_CHOICES = (
         (STATE_NEW, 'new'),
         (STATE_STARTED, 'started'),
         (STATE_PAUSED, 'paused'),
-        (STATE_TIMEOUT, 'timeout'),
         (STATE_WON, 'won'),
         (STATE_LOST, 'lost'),
     )
 
     date_added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    # title of the game
     title = models.CharField(max_length=255, blank=True, default='Game')
-
+    # board to control the game
     board = models.TextField(blank=True, default='', help_text='Board as a JSON matrix. (0-9: adjacent mines, x: mine)')
     player_board = models.TextField(blank=True, default='',
                                     help_text='Board as a JSON matrix. (v: visible, h: hidden, ?: question mark, !: exclamation mark.')
+    # state of the game
     state = models.IntegerField(choices=STATE_CHOICES, default=STATE_NEW)
+    # user realted
     user = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE)
+    # date of the last time that the game was started
+    date_start_game = models.DateTimeField(blank=True, null=True)
+    # total duration of the game in seconds
+    total_duration_seconds = models.IntegerField(default=0)
+    #  duration of the game without counting pauses
+    duration_seconds = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = 'Game'
@@ -150,3 +158,24 @@ class Game(models.Model):
             self.state = self.STATE_LOST
         elif self.is_all_revealed():
             self.state = self.STATE_WON
+
+    def control_state(self, state):
+        # function to control game time and set the state
+        if state == Game.STATE_STARTED and self.state ==  Game.STATE_NEW:
+           self.date_start_game = timezone.now()
+           self.state = Game.STATE_STARTED
+        else:
+            total_s = (timezone.now() - self.date_start_game).total_seconds()
+            if state == Game.STATE_PAUSED:
+                self.total_duration_seconds = total_s + self.total_duration_seconds
+                self.duration_seconds = total_s + self.duration_seconds
+                self.state = Game.STATE_PAUSED
+            elif state == Game.STATE_STARTED and self.state == Game.STATE_PAUSED:
+                self.total_duration_seconds = total_s + self.total_duration_seconds
+                self.date_start_game = timezone.now()
+                self.state = Game.STATE_STARTED
+
+
+
+
+

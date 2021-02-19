@@ -123,18 +123,23 @@ class MineseeperObjectViewSet(
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
-class MineseeperStateViewSet(
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet
-    ):
-    """
-    Mineseeper API used to:
-    
-    just to update the Mineseeper state 
-    """
-    queryset = Game.objects.none()
-    serializer_class = GameStateSerializer
-    ordering_fields = ["date_added"]
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    filterset_fields = ("id",)
+
+    @action(detail=True, methods=("post",))
+    def set_state(self, request,  *args, **kwargs):
+        """
+        action to handler the state
+
+        state: int 
+            this value just can be   STATE_STARTED : 1 STATE_PAUSED:  2
+        """
+        serializer = GameStateSerializer(data=request.data)
+        game = self.get_object()
+        if serializer.is_valid(raise_exception=True):
+            if game.state in [4, 5]:
+                data = {"success": False, "msg": "the game is finish"}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            state = serializer.validated_data['state']
+            game.control_state(state)
+            game.save()
+        serializer = GameObjectSerializer(game, context={'request': request})
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
