@@ -4,13 +4,13 @@ A simple API to give the posiility to play this retro game
 ## Features
 
 * User token authentication
-* Extensively tested and documented
+* Test and documentation
 * Ability to 'flag' a cell with a question mark or red flag
 * Detect when game is over
 * Time tracking
-* Ability to start a new game and preserve/resume the old ones
-* Ability to select the game parameters: number of rows, columns, and mines
-* Ability to support multiple users/accounts
+* Start a new game and preserve/resume the old ones
+* Select the game parameters: number of rows, columns, and mines
+* Support multiple users/accounts
 
 
 ## Install application
