@@ -158,6 +158,11 @@ class Game(models.Model):
             self.state = self.STATE_LOST
         elif self.is_all_revealed():
             self.state = self.STATE_WON
+        if self.state is not self.STATE_STARTED:
+            total_s = (timezone.now() - self.date_start_game).total_seconds()
+            self.total_duration_seconds = total_s + self.total_duration_seconds
+            self.duration_seconds = total_s + self.duration_seconds
+
 
     def control_state(self, state):
         # function to control game time and set the state

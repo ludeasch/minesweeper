@@ -263,6 +263,7 @@ class MineseeperTest(TestCase):
 
         self.game.board = json.dumps(self.board_win)
         self.game.player_board = json.dumps(self.player_b_win)
+        self.game.date_start_game = timezone.now()
         self.game.save()
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
@@ -281,6 +282,7 @@ class MineseeperTest(TestCase):
 
         self.game.board = json.dumps(self.board_lost)
         self.game.player_board = json.dumps(self.player_b_lost)
+        self.game.date_start_game = timezone.now()
         self.game.save()
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
@@ -311,6 +313,7 @@ class MineseeperTest(TestCase):
         """
         self.game.board = json.dumps(self.board_lost)
         self.game.player_board = json.dumps(self.player_b_lost)
+        self.game.date_start_game = timezone.now()
         self.game.save()
         response = self.client.post(self.url_login, data=self.data_user)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
